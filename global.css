@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .bg-gradient {
+        @apply bg-gradient-to-b from-primary-100 to-primary-200;
+    }
+}
