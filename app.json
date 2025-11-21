@@ -4,34 +4,32 @@
     "slug": "consemble-expo",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": ".src/assets/images/icon.png",
+    "icon": "./src/assets/Timber.png",
     "scheme": "consembleexpo",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.consemble.consembleexpo"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": ".src/assets/images/android-icon-foreground.png",
-        "backgroundImage": ".src/assets/images/android-icon-background.png",
-        "monochromeImage": ".src/assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#E6F4FE"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.consemble.consembleexpo"
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": ".src/assets/images/favicon.png"
+      "output": "static"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": ".src/assets/images/splash-icon.png",
+          "image": "./src/assets/Timber.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -43,13 +41,15 @@
       "expo-secure-store",
       [
         "expo-font",
-      {
-        "fonts": [
-          "./src/assets/fonts/CabinetGrotesk-Variable.ttf",
-          "./src/assets/fonts/Gantari-VariableFont_wght.ttf"
-        ]
-      }
-    ]],
+        {
+          "fonts": [
+            "./src/assets/fonts/CabinetGrotesk-Variable.ttf",
+            "./src/assets/fonts/Gantari-VariableFont_wght.ttf"
+          ]
+        }
+      ],
+      "expo-sqlite"
+    ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
