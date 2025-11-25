@@ -1,28 +1,31 @@
-import { SignOutButton } from "@/src/components/auth/SignOutButton";
-import { JazzTest } from "@/src/components/jazz-test";
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
-import { Link } from "expo-router";
-import { Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { checkUserStreak, checkUserVibe, ConsembleAccount } from '@/src/db/jazz/schema';
+import { Redirect } from 'expo-router';
+import { useAccount, useIsAuthenticated } from 'jazz-tools/expo';
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
 export default function Page() {
-  const { user } = useUser();
+  const me = useAccount(ConsembleAccount, { root: {} });
+  const isAuthenticated = useIsAuthenticated();
 
-  return (
-    <SafeAreaView className="flex-1">
-      <SignedIn>
-        <Text>Hello {user?.emailAddresses[0].emailAddress}</Text>
-        <SignOutButton />
-        <JazzTest />
-      </SignedIn>
-      <SignedOut>
-        <Link href="/(auth)/sign-in">
-          <Text>Sign in</Text>
-        </Link>
-        <Link href="/(auth)/sign-up">
-          <Text>Sign up</Text>
-        </Link>
-      </SignedOut>
-    </SafeAreaView>
-  );
+  useEffect(() => {
+    if (me?.root) {
+      checkUserStreak(me.root);
+      checkUserVibe(me.root);
+    }
+  }, [me?.root?.id]);
+
+  if (isAuthenticated === undefined) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#4ac987" />
+      </View>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Redirect href="/(tabs)/new-quests" />;
+  } else {
+    return <Redirect href="/(auth)/sign-in" />;
+  }
 }

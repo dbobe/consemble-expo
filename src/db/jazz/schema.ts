@@ -1,7 +1,7 @@
-import { co, z } from "jazz-tools";
+import { co, z } from 'jazz-tools';
 
-export const difficultyLevels = ["easy", "medium", "hard"] as const;
-export const allRatings = ["-1", "0", "1", "2"] as const;
+export const difficultyLevels = ['easy', 'medium', 'hard'] as const;
+export const allRatings = ['-1', '0', '1', '2'] as const;
 
 export const QuestSchema = co
   .map({
@@ -18,11 +18,11 @@ export const QuestSchema = co
   })
   .withMigration((quest) => {
     if (quest.categories === undefined) {
-      quest.$jazz.set("categories", [quest.category]);
+      quest.$jazz.set('categories', [quest.category]);
     }
-    if (quest.totalVotes === undefined) quest.$jazz.set("totalVotes", 10);
+    if (quest.totalVotes === undefined) quest.$jazz.set('totalVotes', 10);
     if (quest.vibeScore === undefined) {
-      quest.$jazz.set("vibeScore", 0.5);
+      quest.$jazz.set('vibeScore', 0.5);
     }
   });
 export type Quest = co.loaded<typeof QuestSchema>;
@@ -38,69 +38,69 @@ export const QuestInteraction = co
   })
   .withMigration((quest) => {
     if (quest.completed && quest.completedAt === undefined) {
-      quest.$jazz.set("completedAt", new Date(0));
+      quest.$jazz.set('completedAt', new Date(0));
     }
     if (quest.completed && quest.rating === undefined) {
-      quest.$jazz.set("rating", "-1");
+      quest.$jazz.set('rating', '-1');
     }
   });
 export const ListOfQuestInteractions = co.list(QuestInteraction);
 export type QuestInteractionType = co.loaded<typeof QuestInteraction>;
 
 export const categories = [
-  "Arts and Crafts",
-  "Food",
-  "Adventure",
-  "Health and Fitness",
-  "Social",
-  "Spiritual",
-  "Games",
-  "Music and Movies",
-  "Personal Growth",
-  "Home Life",
-  "Finances",
+  'Arts and Crafts',
+  'Food',
+  'Adventure',
+  'Health and Fitness',
+  'Social',
+  'Spiritual',
+  'Games',
+  'Music and Movies',
+  'Personal Growth',
+  'Home Life',
+  'Finances',
   // New Categories Below Here
-  "Physical Health",
-  "Outdoor Adventure",
-  "Visual Art",
-  "Reading",
-  "Games",
-  "Friends",
-  "Family",
-  "New People",
-  "Music",
-  "Relaxation",
-  "Self Care",
-  "Explore",
-  "DIY",
-  "Writing",
-  "Crafts",
-  "Self Improvement",
-  "Baking",
-  "Cooking",
-  "Recipes",
+  'Physical Health',
+  'Outdoor Adventure',
+  'Visual Art',
+  'Reading',
+  'Games',
+  'Friends',
+  'Family',
+  'New People',
+  'Music',
+  'Relaxation',
+  'Self Care',
+  'Explore',
+  'DIY',
+  'Writing',
+  'Crafts',
+  'Self Improvement',
+  'Baking',
+  'Cooking',
+  'Recipes',
   // Round 3...
-  "Acts of Kindness",
-  "Art",
-  "Beverages",
-  "Exploring",
-  "Fitness",
-  "Grilling",
-  "Movies",
-  "Restaurants",
+  'Acts of Kindness',
+  'Art',
+  'Beverages',
+  'Exploring',
+  'Fitness',
+  'Grilling',
+  'Movies',
+  'Restaurants',
 ] as const;
 
 const oldCats = [
-  "Arts and Crafts",
-  "Food",
-  "Adventure",
-  "Health and Fitness",
-  "Social",
-  "Spiritual",
-  "Music and Movies",
-  "Personal Growth",
-  "Home Life",
-  "Finances",
+  'Arts and Crafts',
+  'Food',
+  'Adventure',
+  'Health and Fitness',
+  'Social',
+  'Spiritual',
+  'Music and Movies',
+  'Personal Growth',
+  'Home Life',
+  'Finances',
 ];
 
 export const ListOfInterestCategories = co.list(z.enum(categories));
@@ -110,9 +110,9 @@ export const ConsembleProfile = co.profile({
   name: z.string(),
   preferredFirstName: z.string(),
   preferredLastName: z.string(),
-  gender: z.enum(["male", "female", "nonbinary", "other", "not set"]),
+  gender: z.enum(['male', 'female', 'nonbinary', 'other', 'not set']),
   preferredEmail: z.string(),
-  ageRange: z.enum(["15-20", "21-29", "31-39", "40+", "not set"]),
+  ageRange: z.enum(['15-20', '21-29', '31-39', '40+', 'not set']),
 });
 
 export const ConsembleRoot = co.map({
@@ -138,17 +138,13 @@ export const ConsembleAccount = co
     profile: ConsembleProfile,
   })
   .withMigration(
-    async (
-      account,
-      creationProps?: { name: string; other?: Record<string, unknown> },
-    ) => {
-      console.log("migrating account");
+    async (account, creationProps?: { name: string; other?: Record<string, unknown> }) => {
+      console.log('migrating account');
 
-      // Crear root si no existe
-      if (!account.$jazz.has("root")) {
-        console.log("creating root");
+      if (!account.$jazz.has('root')) {
+        console.log('creating root');
         account.$jazz.set(
-          "root",
+          'root',
           ConsembleRoot.create({
             quests: ListOfQuests.create([]),
             questInteractions: ListOfQuestInteractions.create([]),
@@ -167,16 +163,16 @@ export const ConsembleAccount = co
 
       // Crear profile si no existe
       if (account.profile === undefined) {
-        console.log("creating profile!");
+        console.log('creating profile!');
         account.$jazz.set(
-          "profile",
+          'profile',
           ConsembleProfile.create({
-            name: creationProps?.name ? creationProps.name : "",
-            preferredFirstName: "",
-            preferredLastName: "",
-            preferredEmail: "",
-            gender: "not set",
-            ageRange: "not set",
+            name: creationProps?.name ? creationProps.name : '',
+            preferredFirstName: '',
+            preferredLastName: '',
+            preferredEmail: '',
+            gender: 'not set',
+            ageRange: 'not set',
           }),
         );
       }
@@ -192,47 +188,37 @@ export const ConsembleAccount = co
       });
 
       if (root.interestedCategories === undefined) {
-        root.$jazz.set(
-          "interestedCategories",
-          ListOfInterestCategories.create([]),
-        );
+        root.$jazz.set('interestedCategories', ListOfInterestCategories.create([]));
       } else {
-        const hasOldCats = root.interestedCategories.some((category) =>
-          oldCats.includes(category),
-        );
+        const hasOldCats = root.interestedCategories.some((category) => oldCats.includes(category));
 
         if (hasOldCats) {
-          console.log("Removing retired categories");
+          console.log('Removing retired categories');
           const cleanedCategories = root.interestedCategories.filter(
             (category) => !oldCats.includes(category),
           );
           root.$jazz.set(
-            "interestedCategories",
+            'interestedCategories',
             ListOfInterestCategories.create(cleanedCategories),
           );
         }
       }
 
-      if (!root.$jazz.has("twigsTotal")) root.$jazz.set("twigsTotal", 0);
-      if (!root.$jazz.has("streak")) root.$jazz.set("streak", 0);
-      if (!root.$jazz.has("lastLogin")) root.$jazz.set("lastLogin", new Date());
-      if (!root.$jazz.has("lastNewQuestInteraction"))
-        root.$jazz.set("lastNewQuestInteraction", new Date(0));
-      if (!root.$jazz.has("vibeMeter")) root.$jazz.set("vibeMeter", 60);
-      if (!root.$jazz.has("lastVibeSurveyDate"))
-        root.$jazz.set("lastVibeSurveyDate", new Date(0));
-      if (!root.$jazz.has("completedOnboarding"))
-        root.$jazz.set("completedOnboarding", false);
-
-      checkUserVibe(root);
-      checkUserStreak(root);
+      if (!root.$jazz.has('twigsTotal')) root.$jazz.set('twigsTotal', 0);
+      if (!root.$jazz.has('streak')) root.$jazz.set('streak', 0);
+      if (!root.$jazz.has('lastLogin')) root.$jazz.set('lastLogin', new Date());
+      if (!root.$jazz.has('lastNewQuestInteraction'))
+        root.$jazz.set('lastNewQuestInteraction', new Date(0));
+      if (!root.$jazz.has('vibeMeter')) root.$jazz.set('vibeMeter', 60);
+      if (!root.$jazz.has('lastVibeSurveyDate')) root.$jazz.set('lastVibeSurveyDate', new Date(0));
+      if (!root.$jazz.has('completedOnboarding')) root.$jazz.set('completedOnboarding', false);
     },
   );
 
 // check the consecutive logins
-function checkUserStreak(root: co.loaded<typeof ConsembleRoot>) {
-  if (!root.$jazz || typeof root.$jazz.set !== "function") {
-    console.warn("root.$jazz is not available, skipping streak check");
+export function checkUserStreak(root: co.loaded<typeof ConsembleRoot>) {
+  if (!root.$jazz || typeof root.$jazz.set !== 'function') {
+    console.warn('root.$jazz is not available, skipping streak check');
     return;
   }
   const currDate = new Date();
@@ -251,20 +237,32 @@ function checkUserStreak(root: co.loaded<typeof ConsembleRoot>) {
 
   if (!loggedInToday) {
     if (userLastLoginDate.getTime() < yesterday.getTime()) {
-      root.$jazz.set("streak", 0);
+      // Only reset streak if it's not already 0
+      if (root.streak !== 0) {
+        console.log('resetting streak due to consecutive day miss');
+        root.$jazz.set('streak', 0);
+      }
     }
-    root.$jazz.set("lastLogin", currDate);
+    // Only update lastLogin if it's actually different
+    const existingLastLogin = new Date(root.lastLogin);
+    existingLastLogin.setHours(0, 0, 0, 0);
+    if (existingLastLogin.getTime() !== currDate.getTime()) {
+      console.log('updating lastLogin');
+      root.$jazz.set('lastLogin', currDate);
+    }
   }
 
   const userLastInteractedDate = new Date(root.lastNewQuestInteraction);
   userLastInteractedDate.setHours(0, 0, 0, 0);
   if (userLastInteractedDate.getTime() < yesterday.getTime()) {
-    root.$jazz.set("streak", 0);
-    console.log("resetting streak due to inactivity");
+    if (root.streak !== 0) {
+      console.log('resetting streak due to inactivity');
+      root.$jazz.set('streak', 0);
+    }
   }
 }
 
-function checkUserVibe(root: co.loaded<typeof ConsembleRoot>) {
+export function checkUserVibe(root: co.loaded<typeof ConsembleRoot>) {
   const userLastLoginDate = new Date(root.lastLogin);
   const dateNow = new Date();
 
@@ -273,9 +271,11 @@ function checkUserVibe(root: co.loaded<typeof ConsembleRoot>) {
   const diffDays = Math.floor(diffInMs / millisecondsPerDay);
 
   if (diffDays > 0) {
-    root.$jazz.set(
-      "vibeMeter",
-      Math.max(0, Math.min(root.vibeMeter - diffDays * 5, 120)),
-    );
+    const newVibeMeter = Math.max(0, Math.min(root.vibeMeter - diffDays * 5, 120));
+    // Only update if the value is actually different
+    if (root.vibeMeter !== newVibeMeter) {
+      console.log('updating vibeMeter', root.vibeMeter, 'to', newVibeMeter);
+      root.$jazz.set('vibeMeter', newVibeMeter);
+    }
   }
 }
