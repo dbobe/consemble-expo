@@ -27,6 +27,7 @@ export default function AccountPage() {
   const [tempFirstName, setTempFirstName] = useState<string>('');
   const [tempLastName, setTempLastName] = useState<string>('');
   const [genderValue, setGenderValue] = useState<WhichGender>('not set');
+  const [tempGenderValue, setTempGenderValue] = useState<WhichGender>('not set');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const router = useRouter();
   const isAuthenticated = useIsAuthenticated();
@@ -47,9 +48,9 @@ export default function AccountPage() {
   const isAdmin = (allQuests && me?._permissionsForUser?.(allQuests)?.includes('write')) ?? false;
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthenticated === false) {
       router.replace('/(auth)/sign-in');
-    } else if (isAuthenticated && me.$isLoaded && me.profile) {
+    } else if (isAuthenticated === true && me.$isLoaded && me.profile) {
       setFirstName(me.profile.preferredFirstName);
       setLastName(me.profile.preferredLastName);
       setGenderValue(me.profile.gender as WhichGender);
@@ -71,16 +72,17 @@ export default function AccountPage() {
   const handleEditPress = () => {
     setTempFirstName(firstName);
     setTempLastName(lastName);
+    setTempGenderValue(genderValue);
     setIsModalVisible(true);
   };
 
   const handleSave = () => {
     setFirstName(tempFirstName);
     setLastName(tempLastName);
-    setGenderValue(genderValue);
+    setGenderValue(tempGenderValue);
     me.profile?.$jazz.set('preferredFirstName', tempFirstName);
     me.profile?.$jazz.set('preferredLastName', tempLastName);
-    me.profile?.$jazz.set('gender', genderValue);
+    me.profile?.$jazz.set('gender', tempGenderValue);
     setIsModalVisible(false);
   };
 
@@ -221,12 +223,12 @@ export default function AccountPage() {
                 <View>
                   <Text className="text-sm font-medium text-gray-600 mb-2">Gender</Text>
                   <DropdownPicker
-                    onValueChange={(itemValue: WhichGender) => setGenderValue(itemValue)}
+                    onValueChange={(itemValue: WhichGender) => setTempGenderValue(itemValue)}
                     items={Object.entries(genderOptions).map(([key, value]) => ({
                       label: value,
                       value: key,
                     }))}
-                    value={genderValue}
+                    value={tempGenderValue}
                     className="border border-gray-300 rounded-lg p-3 text-base"
                   />
                 </View>
