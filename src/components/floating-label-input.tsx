@@ -1,44 +1,27 @@
-import { FontAwesome6 } from "@expo/vector-icons";
-import React from "react";
-import {
-  TextInput,
-  TextInputProps,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FontAwesome6 } from '@expo/vector-icons';
+import React from 'react';
+import { TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-} from "react-native-reanimated";
-import { cn } from "../lib/utils";
+} from 'react-native-reanimated';
+import { cn } from '../lib/utils';
 
 export interface FloatingLabelInputProps extends TextInputProps {
   label: string;
   secureTextEntry?: boolean;
 }
 
-export const FloatingLabelInput = React.forwardRef<
-  TextInput,
-  FloatingLabelInputProps
->(
+export const FloatingLabelInput = React.forwardRef<TextInput, FloatingLabelInputProps>(
   (
-    {
-      label,
-      className,
-      secureTextEntry = false,
-      value,
-      onChangeText,
-      onFocus,
-      onBlur,
-      ...props
-    },
+    { label, className, secureTextEntry = false, value, onChangeText, onFocus, onBlur, ...props },
     ref,
   ) => {
     const [isFocused, setIsFocused] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
-    const hasValue = value != null && value !== undefined && value !== "";
+    const hasValue = value != null && value !== undefined && value !== '';
     const isFloating = isFocused || hasValue;
 
     // Shared value for animation (0 = not floating, 1 = floating)
@@ -92,8 +75,8 @@ export const FloatingLabelInput = React.forwardRef<
           onBlur={handleBlur}
           onChangeText={handleChangeText}
           className={cn(
-            "peer w-full rounded-lg border border-gray-300 bg-white px-4 pb-2 pt-6 text-base",
-            "focus:border-[#1ece82] focus:ring-2 focus:ring-[#1ece82]/20",
+            'peer w-full rounded-lg border border-gray-300 bg-white px-4 py-4 text-base',
+            'focus:border-[#1ece82] focus:ring-2 focus:ring-[#1ece82]/20',
             className,
           )}
           secureTextEntry={secureTextEntry && !showPassword}
@@ -102,12 +85,12 @@ export const FloatingLabelInput = React.forwardRef<
         <Animated.Text
           style={[
             {
-              position: "absolute",
+              position: 'absolute',
               left: 16,
-              color: isFloating ? "#4b5563" : "#9ca3af",
-              backgroundColor: isFloating ? "white" : "transparent",
+              color: isFloating ? '#4b5563' : '#9ca3af',
+              backgroundColor: isFloating ? 'white' : 'transparent',
               paddingHorizontal: isFloating ? 4 : 0,
-              pointerEvents: "none",
+              pointerEvents: 'none',
             },
             labelAnimatedStyle,
           ]}
@@ -119,11 +102,7 @@ export const FloatingLabelInput = React.forwardRef<
             onPress={() => setShowPassword(!showPassword)}
             className="absolute right-4 top-1/2 -translate-y-1/2"
           >
-            <FontAwesome6
-              name={showPassword ? "eye-slash" : "eye"}
-              size={22}
-              color="#14839f"
-            />
+            <FontAwesome6 name={showPassword ? 'eye-slash' : 'eye'} size={22} color="#14839f" />
           </TouchableOpacity>
         )}
       </View>
@@ -131,4 +110,4 @@ export const FloatingLabelInput = React.forwardRef<
   },
 );
 
-FloatingLabelInput.displayName = "FloatingLabelInput";
+FloatingLabelInput.displayName = 'FloatingLabelInput';

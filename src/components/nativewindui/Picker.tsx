@@ -1,0 +1,39 @@
+import { useColorScheme } from '@/src/lib/useColorScheme';
+import { cn } from '@/src/lib/utils';
+import { Picker as RNPicker } from '@react-native-picker/picker';
+import { View } from 'react-native';
+
+export function Picker<T>({
+  mode = 'dropdown',
+  style,
+  dropdownIconColor,
+  dropdownIconRippleColor,
+  className,
+  ...props
+}: React.ComponentProps<typeof RNPicker<T>>) {
+  const { colors } = useColorScheme();
+
+  return (
+    <View
+      className={cn(
+        'ios:shadow-sm ios:shadow-black/5 border-background bg-background rounded-md border',
+        className,
+      )}
+    >
+      <RNPicker
+        mode={mode}
+        style={
+          style ?? {
+            backgroundColor: colors.root,
+            borderRadius: 8,
+          }
+        }
+        dropdownIconColor={dropdownIconColor ?? colors.foreground}
+        dropdownIconRippleColor={dropdownIconRippleColor ?? colors.foreground}
+        {...props}
+      />
+    </View>
+  );
+}
+
+export const PickerItem = RNPicker.Item;
