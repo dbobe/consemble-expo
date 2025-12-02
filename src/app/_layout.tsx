@@ -14,7 +14,11 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     'CabinetGrotesk-Variable': require('../assets/fonts/CabinetGrotesk-Variable.ttf'),
+    'Faustina-VariableFont_wght': require('../assets/fonts/Faustina-VariableFont_wght.ttf'),
     'Gantari-VariableFont_wght': require('../assets/fonts/Gantari-VariableFont_wght.ttf'),
+    'Tajawal-Bold': require('../assets/fonts/Tajawal-Bold.ttf'),
+    'Tajawal-ExtraBold': require('../assets/fonts/Tajawal-ExtraBold.ttf'),
+    'Tajawal-Regular': require('../assets/fonts/Tajawal-Regular.ttf'),
   });
 
   useEffect(() => {

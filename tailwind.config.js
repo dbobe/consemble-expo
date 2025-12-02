@@ -10,8 +10,10 @@ module.exports = {
           200: '#4ac987',
           300: '#1ca071',
           400: '#17825c',
+          500: '#149768',
         },
         'logo-text': '#149f6e',
+        'custom-green-random': '#1ece82',
         'secondary-orange': {
           100: '#fccb91',
           200: '#fbae53',
@@ -41,6 +43,10 @@ module.exports = {
       fontFamily: {
         'cabinet-grotesk': ['CabinetGrotesk-Variable'],
         gantari: ['Gantari-VariableFont_wght'],
+        faustina: ['Faustina-VariableFont_wght'],
+        'tajawal-bold': ['Tajawal-Bold'],
+        'tajawal-extra-bold': ['Tajawal-ExtraBold'],
+        'tajawal-regular': ['Tajawal-Regular'],
       },
     },
   },
