@@ -1,16 +1,11 @@
-import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
+import { Tabs } from 'expo-router';
 import { View } from 'react-native';
 
 export default function Layout() {
   return (
     <View className="flex-1">
-      <NativeTabs>
-        {/* <NativeTabs.Trigger name="index">
-          <Icon sf="house.fill" drawable={'ic_secure'} />
-          <Label>Home</Label>
-        </NativeTabs.Trigger> */}
+      {/* <NativeTabs>
         <NativeTabs.Trigger name="new-quests">
-          {/* <Icon src={require("@/src/assets/menu1.png")} /> */}
           <Icon sf={{ default: 'menucard', selected: 'menucard.fill' }} />
           <Label hidden />
         </NativeTabs.Trigger>
@@ -22,7 +17,14 @@ export default function Layout() {
           <Icon sf={{ default: 'gearshape', selected: 'gearshape.fill' }} />
           <Label hidden />
         </NativeTabs.Trigger>
-      </NativeTabs>
+      </NativeTabs> */}
+      <Tabs initialRouteName="new-quests" screenOptions={{ headerShown: false }}>
+        <Tabs.Screen name="new-quests" options={{ title: 'New Quests' }} />
+        <Tabs.Screen name="my_quests" options={{ title: 'My Quests' }} />
+        <Tabs.Screen name="account" options={{ title: 'Account' }} />
+        <Tabs.Screen name="vibe-meter" options={{ title: 'Vibe Meter', href: null }} />
+        <Tabs.Screen name="index" options={{ title: 'Home', href: null }} />
+      </Tabs>
     </View>
   );
 }

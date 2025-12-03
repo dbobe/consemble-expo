@@ -1,12 +1,25 @@
-import { useAuth } from "@clerk/clerk-expo";
-import { Redirect, Stack } from "expo-router";
-import { View } from "react-native";
+import { useAuth } from '@clerk/clerk-expo';
+import { Stack } from 'expo-router';
+import { ActivityIndicator, View } from 'react-native';
 
 export default function AuthLayout() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
+
+  // Show loading while Clerk loads
+  if (!isLoaded) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#4ac987" />
+      </View>
+    );
+  }
 
   if (isSignedIn) {
-    return <Redirect href="/" />;
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#4ac987" />
+      </View>
+    );
   }
 
   return (

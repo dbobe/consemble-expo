@@ -17,7 +17,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -169,6 +169,7 @@ export default function AccountPage() {
                 </TouchableOpacity>
               </View>
               <View className="w-96 border-t border-[#99d8bd] mt-3 mx-auto" />
+
               {/* Preferred Categories */}
               <CategorySelection
                 userInterests={me.root?.interestedCategories ?? []}
