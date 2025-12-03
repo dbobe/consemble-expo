@@ -79,7 +79,7 @@ export default function NewQuestsPage() {
     hasCheckedOnboarding.current = true;
 
     if (me.root.completedOnboarding === false) {
-      router.replace('/(tabs)/vibe-meter');
+      router.replace('/onboarding');
     }
   }, [me?.root?.completedOnboarding, router]);
 
