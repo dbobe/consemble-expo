@@ -2,6 +2,7 @@ import easyIcon from '@/src/assets/easy.png';
 import hardIcon from '@/src/assets/hard.png';
 import mediumIcon from '@/src/assets/medium.png';
 import { QuestVibeScore } from '@/src/components/quest-vibe-score';
+import { imageReferences } from '@/src/db/jazz/imageReferences';
 import { ConsembleAccount, ListOfQuests, Quest } from '@/src/db/jazz/schema';
 import { cn } from '@/src/lib/utils';
 import { Image } from 'expo-image';
@@ -28,6 +29,8 @@ const ROTATION_ANGLE = 30;
 
 export default function NewQuestsPage() {
   const router = useRouter();
+  const hasCheckedOnboarding = useRef(false);
+  const hasMounted = useRef(false);
 
   const me = useAccount(ConsembleAccount, {
     resolve: {
@@ -36,7 +39,7 @@ export default function NewQuestsPage() {
           $each: { quest: true },
         },
         interestedCategories: true,
-        currentQuest: true,
+        // currentQuest: true,
       },
     },
   });
@@ -61,14 +64,24 @@ export default function NewQuestsPage() {
   const opacity = useSharedValue(1);
   const scale = useSharedValue(1);
 
+  useEffect(() => {
+    // Use a small delay to let Jazz finish initial sync (Claude)
+    const timer = setTimeout(() => {
+      hasMounted.current = true;
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Verify authentication and onboarding status
   useEffect(() => {
-    if (!me) return;
+    if (!me?.root || hasCheckedOnboarding.current) return;
 
-    if (me?.$jazz?.root?.get('completedOnboarding') === false) {
-      router.replace('/(tabs)/vibe-meter');
+    hasCheckedOnboarding.current = true;
+
+    if (me.root.completedOnboarding === false) {
+      router.replace('/onboarding');
     }
-  }, [me]);
+  }, [me?.root?.completedOnboarding, router]);
 
   //Filter available quests
   useEffect(() => {
@@ -102,7 +115,11 @@ export default function NewQuestsPage() {
     } else {
       setAvailableQuests([]);
     }
-  }, [allQuests, me?.root?.interestedCategories, me?.root?.questInteractions]);
+  }, [
+    allQuests?.length,
+    me?.root?.interestedCategories?.length,
+    me?.root?.questInteractions?.length,
+  ]);
 
   // Select actual quest
   useEffect(() => {
@@ -117,12 +134,12 @@ export default function NewQuestsPage() {
       }
 
       if (questToShow) {
+        hasSetInitialQuest.current = true;
         setCurrentCard({ id: cardIdCounter.current++, quest: questToShow });
 
         // Update persisted quest
-        if (me?.root) {
+        if (me?.root && hasMounted.current) {
           me.root.$jazz.set('currentQuest', questToShow);
-          hasSetInitialQuest.current = true;
         }
       }
     }
@@ -131,7 +148,7 @@ export default function NewQuestsPage() {
     if (availableQuests.length === 0) {
       hasSetInitialQuest.current = false;
     }
-  }, [availableQuests, currentCard, isAnimating]);
+  }, [availableQuests.length, currentCard, isAnimating]);
 
   // Calculate active quests
   const activeQuestsCount = Array.isArray(me?.root?.questInteractions)
@@ -266,6 +283,8 @@ export default function NewQuestsPage() {
     );
   }
 
+  console.log('Current Card:', currentCard);
+
   return (
     <View className="flex-1">
       <LinearGradient colors={['#b8f7c9', '#9ae5f6']} style={{ flex: 1 }}>
@@ -297,7 +316,10 @@ export default function NewQuestsPage() {
                   {/* Quest Image */}
                   <Image
                     source={{
-                      uri: currentCard?.quest?.imageUrl || 'https://via.placeholder.com/400x255',
+                      uri:
+                        currentCard?.quest?.imageUrl ||
+                        imageReferences[currentCard?.quest?.category] ||
+                        'https://placehold.co/400x255',
                     }}
                     style={{
                       width: '100%',

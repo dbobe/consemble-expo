@@ -94,9 +94,9 @@ export default function AccountPage() {
     <View className="flex-1">
       <LinearGradient colors={['#b8f7c9', '#9ae5f6']} style={{ flex: 1 }}>
         <SafeAreaView className="flex-1">
-          <View className="flex flex-1 flex-col gap-8">
+          <View className="flex flex-1 flex-col gap-8 min-h-screen">
             <View className="relative">
-              <View className="absolute left-0 -top-16 bottom-0 w-full bg-primary-200 h-36 rounded-b-[40px] z-0 shadow-sm" />
+              <View className="absolute left-0 -top-20 bottom-0 w-full bg-primary-200 h-40 rounded-b-[40px] z-0 shadow-sm" />
               <View className="flex flex-row items-center justify-between px-8 z-10 mt-6">
                 <TouchableOpacity onPress={() => router.back()}>
                   <FontAwesome6 name="arrow-left" size={16} color="black" />
@@ -169,6 +169,7 @@ export default function AccountPage() {
                 </TouchableOpacity>
               </View>
               <View className="w-96 border-t border-[#99d8bd] mt-3 mx-auto" />
+
               {/* Preferred Categories */}
               <CategorySelection
                 userInterests={me.root?.interestedCategories ?? []}
