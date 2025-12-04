@@ -1,9 +1,5 @@
-import { Text, View } from "react-native";
+import ConsembleScreen from '../onboarding/ConsembleScreen';
 
 export default function MyQuestsPage() {
-  return (
-    <View>
-      <Text>My Quests</Text>
-    </View>
-  );
+  return <ConsembleScreen />;
 }
