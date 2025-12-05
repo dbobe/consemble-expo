@@ -1,73 +1,34 @@
-import { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
-import ConsembleScreen from './ConsembleScreen';
-import WelcomeScreen from './WelcomeScreen';
+import { ConsembleAccount } from '@/src/db/jazz/schema';
+import { useRouter } from 'expo-router';
+import { useAccount } from 'jazz-tools/expo';
+import { useEffect } from 'react';
+import { OnboardingData, OnboardingFlow } from './OnboardingFlow';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-export default function OnboardingPage() {
-  const [currentScreen, setCurrentScreen] = useState(0);
-  const opacity = useSharedValue(1);
+export default function OnboardingScreen() {
+  const router = useRouter();
+  const me = useAccount(ConsembleAccount, {
+    resolve: {
+      root: true,
+      profile: true,
+    },
+  });
 
   useEffect(() => {
-    // Auto transition after X seconds
-    const timer = setTimeout(() => {
-      transitionToNextScreen();
-    }, 3000);
+    if (me.$isLoaded && me.root?.completedOnboarding) {
+      router.push('/(tabs)/new-quests');
+    }
+  }, [me.$isLoaded, me.root?.completedOnboarding, router]);
 
-    return () => clearTimeout(timer);
-  }, []);
+  const handleOnboardingComplete = async (data: OnboardingData) => {
+    if (me?.root && me?.profile) {
+      me.profile.$jazz.set('gender', data.gender);
+      me.profile.$jazz.set('ageRange', data.ageRange);
+      me.root.$jazz.set('interestedCategories', data.interests);
+      me.root.$jazz.set('completedOnboarding', true);
 
-  const transitionToNextScreen = () => {
-    // Fade out current screen
-    opacity.value = withTiming(
-      0,
-      {
-        duration: 400,
-        easing: Easing.bezier(0.4, 0, 0.2, 1),
-      },
-      (finished) => {
-        if (finished) {
-          // Use runOnJS to update state from UI thread
-          scheduleOnRN(setCurrentScreen, 1);
-          // Fade in new screen
-          opacity.value = withTiming(1, {
-            duration: 400,
-            easing: Easing.bezier(0.4, 0, 0.2, 1),
-          });
-        }
-      },
-    );
+      router.push('/(tabs)/new-quests');
+    }
   };
 
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-  }));
-
-  return (
-    <View style={styles.container}>
-      <Animated.View style={[styles.screen, opacityStyle]}>
-        {currentScreen === 0 ? <WelcomeScreen /> : <ConsembleScreen />}
-      </Animated.View>
-    </View>
-  );
+  return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  },
-  screen: {
-    flex: 1,
-    width: SCREEN_WIDTH,
-  },
-});

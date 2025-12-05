@@ -1,7 +1,7 @@
 import { ClerkLoaded, ClerkProvider } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -39,7 +39,11 @@ export default function RootLayout() {
       >
         <ClerkLoaded>
           <MyJazzProvider>
-            <Slot />
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
+            </Stack>
+            {/* <Slot /> */}
           </MyJazzProvider>
         </ClerkLoaded>
       </ClerkProvider>
