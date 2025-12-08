@@ -54,7 +54,9 @@ export default function CategorySelection({
         Preferred Categories
       </Text>
       {displayError && notEnoughSelected && (
-        <Text className="text-sm font-medium text-neutral-gray-400">Select 3 or more</Text>
+        <Text className="text-sm font-medium text-neutral-gray-400 text-center mb-2">
+          Select 3 or more
+        </Text>
       )}
       <View className="flex flex-row flex-wrap w-full gap-2 justify-start p-2">
         {displayInterests.map((interest) => (

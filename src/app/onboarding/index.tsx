@@ -1,22 +1,34 @@
-import { LinearGradient } from 'expo-linear-gradient';
+import { ConsembleAccount } from '@/src/db/jazz/schema';
 import { useRouter } from 'expo-router';
-import { Button, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAccount } from 'jazz-tools/expo';
+import { useEffect } from 'react';
+import { OnboardingData, OnboardingFlow } from './OnboardingFlow';
 
-export default function OnboardingPage() {
+export default function OnboardingScreen() {
   const router = useRouter();
-  return (
-    <View className="flex-1">
-      <LinearGradient colors={['#b8f7c9', '#9ae5f6']} style={{ flex: 1 }}>
-        <SafeAreaView className="flex-1">
-          <View>
-            <Text className="text-2xl font-extrabold font-cabinet-grotesk text-center text-[#355677] mt-4">
-              Onboarding
-            </Text>
-          </View>
-          <Button title="Continue" onPress={() => router.replace('/(tabs)/new-quests')} />
-        </SafeAreaView>
-      </LinearGradient>
-    </View>
-  );
+  const me = useAccount(ConsembleAccount, {
+    resolve: {
+      root: true,
+      profile: true,
+    },
+  });
+
+  useEffect(() => {
+    if (me.$isLoaded && me.root?.completedOnboarding) {
+      router.push('/(tabs)/new-quests');
+    }
+  }, [me.$isLoaded, me.root?.completedOnboarding, router]);
+
+  const handleOnboardingComplete = async (data: OnboardingData) => {
+    if (me?.root && me?.profile) {
+      me.profile.$jazz.set('gender', data.gender);
+      me.profile.$jazz.set('ageRange', data.ageRange);
+      me.root.$jazz.set('interestedCategories', data.interests);
+      me.root.$jazz.set('completedOnboarding', true);
+
+      router.push('/(tabs)/new-quests');
+    }
+  };
+
+  return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 }
