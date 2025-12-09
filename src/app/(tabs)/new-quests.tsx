@@ -85,40 +85,75 @@ export default function NewQuestsPage() {
 
   //Filter available quests
   useEffect(() => {
-    if (!allQuests || !Array.isArray(allQuests)) {
+    console.log('Filtering available quests');
+    console.log('All quests:', allQuests, 'isArray:', Array.isArray(allQuests));
+    console.log('Me:', !!me, 'me.$isLoaded:', me?.$isLoaded, 'me.root:', !!me?.root);
+
+    if (!allQuests || !allQuests.$isLoaded || !Array.isArray(allQuests)) {
       setIsLoading(true);
       return;
     }
+
+    // Wait for me to be loaded
+    if (!me || !me.$isLoaded || !me.root) {
+      setIsLoading(true);
+      return;
+    }
+
     setIsLoading(false);
 
-    const myQuests = Array.isArray(me?.root?.questInteractions) ? me.root.questInteractions : [];
+    const myQuests = Array.isArray(me.root.questInteractions) ? me.root.questInteractions : [];
 
-    if (me?.root?.interestedCategories && me?.root?.interestedCategories.length > 0) {
+    // Create a set of quest IDs that the user has already interacted with
+    const myQuestIds = new Set(
+      myQuests.map((item) => item?.quest?.$jazz?.id).filter((id): id is string => !!id),
+    );
+
+    let filteredQuests: Quest[] = [];
+
+    if (me.root.interestedCategories && me.root.interestedCategories.length > 0) {
       const interestedCategories = me.root.interestedCategories;
 
-      const filteredQuests = allQuests.filter((quest) => {
-        const hasMatchingCategory = quest?.categories?.some((category) =>
+      filteredQuests = allQuests.filter((quest) => {
+        if (!quest) return false;
+
+        const hasMatchingCategory = quest.categories?.some((category) =>
           interestedCategories.includes(category),
         );
 
-        const notAlreadyAccepted = !myQuests.some((item) => item?.quest?.title === quest?.title);
+        // Use Jazz ID for comparison instead of title
+        const notAlreadyAccepted = !myQuestIds.has(quest.$jazz?.id);
 
         return hasMatchingCategory && notAlreadyAccepted;
       });
-
-      setAvailableQuests(filteredQuests);
-    } else if (allQuests) {
-      const filteredQuests = allQuests.filter(
-        (quest) => !myQuests.some((item) => item?.quest?.title === quest?.title),
-      );
-      setAvailableQuests(filteredQuests);
     } else {
-      setAvailableQuests([]);
+      filteredQuests = allQuests.filter((quest) => quest && !myQuestIds.has(quest.$jazz?.id));
     }
+
+    // Only update if the result actually changed
+    setAvailableQuests((prev) => {
+      const prevIds = new Set(prev.map((q) => q.$jazz?.id).filter((id): id is string => !!id));
+      const newIds = new Set(
+        filteredQuests.map((q) => q.$jazz?.id).filter((id): id is string => !!id),
+      );
+
+      // Check if the sets are different
+      if (prevIds.size !== newIds.size) return filteredQuests;
+      for (const id of prevIds) {
+        if (!newIds.has(id)) return filteredQuests;
+      }
+      for (const id of newIds) {
+        if (!prevIds.has(id)) return filteredQuests;
+      }
+      // No changes, return previous value
+      return prev;
+    });
   }, [
-    allQuests?.length,
-    me?.root?.interestedCategories?.length,
-    me?.root?.questInteractions?.length,
+    allQuests,
+    allQuests?.$isLoaded,
+    me?.$isLoaded,
+    me?.root?.interestedCategories,
+    me?.root?.questInteractions,
   ]);
 
   // Select actual quest

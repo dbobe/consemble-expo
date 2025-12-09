@@ -1,4 +1,5 @@
 import { QuestCard } from '@/src/components/QuestCard';
+import { VibeSurveyCard } from '@/src/components/VibeSurveyCard';
 import { ConsembleAccount, QuestInteractionType } from '@/src/db/jazz/schema';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAccount } from 'jazz-tools/expo';
@@ -17,8 +18,7 @@ export default function MyQuestsPage() {
   });
 
   const sections = useMemo(() => {
-    const questInteractions = me?.root?.questInteractions ?? [];
-
+    const questInteractions = me?.$isLoaded ? me.root?.questInteractions : [];
     const active: QuestInteractionType[] = [];
     const completed: QuestInteractionType[] = [];
 
@@ -42,12 +42,19 @@ export default function MyQuestsPage() {
       { title: 'Active', data: active },
       { title: 'Completed', data: completed },
     ].filter((section) => section.data.length > 0);
-  }, [me?.root?.questInteractions]);
+  }, [me.$isLoaded, me?.root?.questInteractions]);
 
   return (
     <View className="flex-1 min-h-screen">
       <LinearGradient colors={['#b8f7c9', '#9ae5f6']} style={{ flex: 1 }}>
         <SafeAreaView className="flex-1">
+          <VibeSurveyCard
+            onResponseClick={() => {}}
+            // width="w-full"
+            // height="h-full"
+            roundness="rounded-2xl"
+            question="How this quest made you feel?"
+          />
           <SectionList
             ListHeaderComponent={() => (
               <View className="p-4">
