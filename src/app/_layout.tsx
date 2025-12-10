@@ -39,7 +39,7 @@ export default function RootLayout() {
       >
         <ClerkLoaded>
           <MyJazzProvider>
-            <Stack>
+            <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
             </Stack>
