@@ -1,5 +1,4 @@
 import { QuestCard } from '@/src/components/QuestCard';
-import { VibeSurveyCard } from '@/src/components/VibeSurveyCard';
 import { ConsembleAccount, QuestInteractionType } from '@/src/db/jazz/schema';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAccount } from 'jazz-tools/expo';
@@ -48,13 +47,6 @@ export default function MyQuestsPage() {
     <View className="flex-1 min-h-screen">
       <LinearGradient colors={['#b8f7c9', '#9ae5f6']} style={{ flex: 1 }}>
         <SafeAreaView className="flex-1">
-          <VibeSurveyCard
-            onResponseClick={() => {}}
-            // width="w-full"
-            // height="h-full"
-            roundness="rounded-2xl"
-            question="How this quest made you feel?"
-          />
           <SectionList
             ListHeaderComponent={() => (
               <View className="p-4">

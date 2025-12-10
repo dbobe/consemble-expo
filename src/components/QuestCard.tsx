@@ -1,10 +1,13 @@
 import { FontAwesome6 } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useAccount } from 'jazz-tools/expo';
+import { useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import Animated, { Easing, FadeInDown, FadeOutUp, LinearTransition } from 'react-native-reanimated';
-import { QuestInteractionType } from '../db/jazz/schema';
+import { ConsembleAccount, QuestInteractionType } from '../db/jazz/schema';
 import { cn } from '../lib/utils';
 import { QuestVibeScore } from './quest-vibe-score';
+import { VibeSurveyCard } from './VibeSurveyCard';
 
 interface QuestCardProps {
   questInteraction: QuestInteractionType;
@@ -23,14 +26,57 @@ const moodIcons = [
 ];
 
 export function QuestCard({ questInteraction }: QuestCardProps) {
+  const [showVibeSurvey, setShowVibeSurvey] = useState<boolean>(false);
+
+  // Get access to user account for updating twigsTotal and vibeMeter
+  const me = useAccount(ConsembleAccount, {
+    resolve: {
+      root: true,
+    },
+  });
+
   const difficulty = questInteraction.quest.$isLoaded ? questInteraction.quest.difficulty : 'easy';
   const isCompleted = questInteraction.completed;
 
-  const handleCompleteQuest = () => {
-    if (questInteraction.$isLoaded && !questInteraction.completed) {
-      questInteraction.$jazz.set('completed', true);
-      questInteraction.$jazz.set('completedAt', new Date());
+  const handleCompleteClick = () => {
+    setShowVibeSurvey(true);
+  };
+
+  const handleVibeSurveyResponse = (mood: 'sad' | 'okay' | 'happy') => {
+    if (!questInteraction.$isLoaded || questInteraction.completed) return;
+
+    // Map mood to rating value
+    const moodRating: Record<'sad' | 'okay' | 'happy', '0' | '1' | '2'> = {
+      sad: '0',
+      okay: '1',
+      happy: '2',
+    };
+
+    const rating = moodRating[mood];
+
+    // Update the quest interaction
+    questInteraction.$jazz.set('rating', rating);
+    questInteraction.$jazz.set('completed', true);
+    questInteraction.$jazz.set('completedAt', new Date());
+
+    // Add twigs to the total
+    if (me?.$isLoaded && me.root && questInteraction.quest.$isLoaded) {
+      const questTwigs = questInteraction.quest.twigs ?? 0;
+      const currentTwigs = me.root.twigsTotal ?? 0;
+      me.root.$jazz.set('twigsTotal', currentTwigs + questTwigs);
+
+      // Update vibeMeter based on mood
+      const vibeChange = mood === 'happy' ? 5 : mood === 'okay' ? 2 : -2;
+      const currentVibe = me.root.vibeMeter ?? 60;
+      const newVibe = Math.max(0, Math.min(currentVibe + vibeChange, 120));
+      me.root.$jazz.set('vibeMeter', newVibe);
+
+      // Update last date completed
+      me.root.$jazz.set('lastDateCompleted', new Date());
     }
+
+    // Hide the survey
+    setShowVibeSurvey(false);
   };
 
   if (!questInteraction.$isLoaded) {
@@ -38,6 +84,20 @@ export function QuestCard({ questInteraction }: QuestCardProps) {
       <View className="rounded-3xl p-5 w-full shadow-sm shadow-black/10, elevation-sm">
         <ActivityIndicator size="large" color="#4ac987" />
       </View>
+    );
+  }
+
+  if (showVibeSurvey) {
+    return (
+      <Animated.View entering={FadeInDown.duration(180)} exiting={FadeOutUp.duration(160)}>
+        <VibeSurveyCard
+          onResponseClick={handleVibeSurveyResponse}
+          width="w-full"
+          height="h-auto"
+          roundness="rounded-2xl"
+          question="How this quest made you feel?"
+        />
+      </Animated.View>
     );
   }
 
@@ -75,11 +135,7 @@ export function QuestCard({ questInteraction }: QuestCardProps) {
           <QuestVibeScore
             vibeScore={questInteraction.quest.$isLoaded ? questInteraction.quest.vibeScore : 0}
           />
-          <Pressable
-            onPress={() => {
-              handleCompleteQuest();
-            }}
-          >
+          <Pressable onPress={handleCompleteClick}>
             <View className="bg-[#349d66]/50 rounded-full p-2 size-9">
               {/* <FontAwesome6 name="check" size={20} color="white" /> */}
             </View>

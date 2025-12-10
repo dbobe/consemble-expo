@@ -22,7 +22,7 @@ export default function Layout() {
         <Tabs.Screen name="new-quests" options={{ title: 'New Quests' }} />
         <Tabs.Screen name="my_quests" options={{ title: 'My Quests' }} />
         <Tabs.Screen name="account" options={{ title: 'Account' }} />
-        <Tabs.Screen name="vibe-meter" options={{ title: 'Vibe Meter', href: null }} />
+        <Tabs.Screen name="vibe-meter" options={{ title: 'Vibe Meter' }} />
         <Tabs.Screen name="index" options={{ title: 'Home', href: null }} />
       </Tabs>
     </View>
