@@ -434,7 +434,7 @@ export default function NewQuestsPage() {
                   You already have 5 active quests!
                 </Text>
                 <TouchableOpacity
-                  onPress={() => router.push('/(tabs)/my_quests')}
+                  onPress={() => router.push('/my_quests')}
                   className="bg-primary-300 px-4 py-2 rounded-full absolute left-1/2 -translate-x-1/2 -bottom-8"
                 >
                   <Text
