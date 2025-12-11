@@ -46,7 +46,7 @@ export default function MyQuestsPage() {
   return (
     <View className="flex-1 min-h-screen">
       <LinearGradient colors={['#b8f7c9', '#9ae5f6']} style={{ flex: 1 }}>
-        <SafeAreaView className="flex-1">
+        <SafeAreaView className="flex-1 -pb-safe-offset-20">
           <SectionList
             ListHeaderComponent={() => (
               <View className="p-4">
@@ -56,6 +56,7 @@ export default function MyQuestsPage() {
               </View>
             )}
             sections={sections}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }) => <QuestCard questInteraction={item} />}
             renderSectionHeader={({ section: { title } }) => (
               <Animated.Text

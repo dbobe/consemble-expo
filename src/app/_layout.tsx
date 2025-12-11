@@ -40,8 +40,12 @@ export default function RootLayout() {
         <ClerkLoaded>
           <MyJazzProvider>
             <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="(main)" options={{ headerShown: false }} />
               <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="vibe-meter"
+                options={{ headerShown: false, presentation: 'modal' }}
+              />
             </Stack>
             {/* <Slot /> */}
           </MyJazzProvider>

@@ -93,7 +93,7 @@ export default function AccountPage() {
   return (
     <View className="flex-1 ">
       <LinearGradient colors={['#b8f7c9', '#9ae5f6']} style={{ flex: 1 }}>
-        <SafeAreaView className="flex-1 min-h-screen">
+        <SafeAreaView className="flex-1 min-h-screen -pb-safe-offset-20">
           <View className="flex flex-1 flex-col gap-8">
             <View className="relative">
               <View className="absolute left-0 -top-20 bottom-0 w-full bg-primary-200 h-40 rounded-b-[40px] z-0 shadow-sm" />
