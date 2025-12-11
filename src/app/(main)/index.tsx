@@ -1,9 +1,5 @@
-import { ActivityIndicator, View } from 'react-native';
+import { Redirect } from 'expo-router';
 
 export default function Page() {
-  return (
-    <View className="flex-1 justify-center items-center">
-      <ActivityIndicator size="large" color="#4ac987" />
-    </View>
-  );
+  return <Redirect href="/new-quests" />;
 }

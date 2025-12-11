@@ -12,9 +12,21 @@ export default function Layout() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  // Check if we are on new-quests (handle various pathname formats)
+  const isOnNewQuests =
+    pathname === '/new-quests' ||
+    pathname === '/(main)/new-quests' ||
+    pathname.endsWith('/new-quests') ||
+    pathname === '/' ||
+    pathname === '';
+
+  // Check if we are on account
+  const isOnAccount =
+    pathname === '/account' || pathname === '/(main)/account' || pathname.endsWith('/account');
+
   // Determine which screen the menu button should navigate to
   const getMenuDestination = () => {
-    if (pathname === '/new-quests') {
+    if (isOnNewQuests) {
       return '/my_quests';
     }
     return '/new-quests';
@@ -23,7 +35,7 @@ export default function Layout() {
   return (
     <View className="flex-1">
       {/* Gear icon at top-right */}
-      {pathname !== '/account' && (
+      {!isOnAccount && (
         <Pressable
           onPress={() => router.push('/account')}
           style={{
@@ -41,7 +53,7 @@ export default function Layout() {
       <Slot />
 
       {/* Bottom floating navigation */}
-      {pathname !== '/account' && (
+      {!isOnAccount && (
         <View
           style={{
             position: 'absolute',
@@ -55,7 +67,7 @@ export default function Layout() {
         >
           <Pressable onPress={() => router.push(getMenuDestination())}>
             <Image
-              source={pathname === '/new-quests' ? menuIcon : addIcon}
+              source={isOnNewQuests ? menuIcon : addIcon}
               style={{ width: 40, height: 40 }}
               contentFit="contain"
             />
